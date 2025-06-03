@@ -1,0 +1,205 @@
+Skip to main content
+Skip to editor
+Skip to results
+Site
+Worksheets
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+--SELF-SERVICE PROCS TO GRANT/REVOKE PRIVILEGES AND GRANTS 
+    EXECUTE IMMEDIATE GRANT_STATEMENT;
+    GRANT_STATEMENT_RETURN := 'STATEMENT COMPLETED:  '|| GRANT_STATEMENT ;
+    
+    RETURN :GRANT_STATEMENT_RETURN;
+
+END;
+$$;
+
+ALTER PROCEDURE ADMIN_UTILITIES.LOCAL_ADMIN_UTILITES.MANAGE_GRANTS(VARCHAR) 
+SET COMMENT = 
+$$PROCEDURE NAME: ADMIN_UTILITIES.LOCAL_ADMIN_UTILITES.MANAGE_GRANTS(VARCHAR) 
+PROCEDURE ARGUMENTS: GRANT_STATEMENT VARCHAR;  This is the grant or revoke statement to be executed. 
+PROCEDURE PURPOSE: To allow local account administrators to manage grants within the account but prevent impacting Snowflake System roles.  
+HOW PROCEDURE WORKS:  The procedure is executed with owner's rights.  
+    The role that owns the procedude has a single privilege (outside of usage onthe database and schema whare the proc is located): MANAGE GRANTS.  
+    The role can only execute grant and revoke statements.  Other statements passed to the procedure will fail. 
+    The procedure prevents granting global pribvileges on the account.
+    If the statement passed to the procedure contains any of the following strings the procedure will throw an error:
+        ACCOUNTADMIN
+        SYSADMIN
+        SECURITYADMIN
+        USERADMIN
+        GLOBALORGADMIN
+        ORGADMIN
+        GRANTS_MANAGER
+        ADMIN_UTILITES
+       -- or --
+        ON ACCOUNT plus any global privilege not including the following:
+            APPLY AGGREGATION POLICY  
+            APPLY AUTHENTICATION POLICY     
+            APPLY MASKING POLICY  
+            APPLY ROW ACCESS POLICY    
+            APPLY SESSION POLICY  
+            APPLY PACKAGES POLICY      
+            APPLY PROJECTION POLICY  
+            APPLY TAG   
+            ATTACH POLICY  
+            AUDIT         
+            CANCEL QUERY  
+            CREATE COMPUTE POOL        
+            CREATE API INTEGRATION      
+            CREATE APPLICATION  
+            CREATE APPLICATION PACKAGE      
+            CREATE DATABASE       
+            CREATE EXTERNAL VOLUME    
+            CREATE INTEGRATION    
+            CREATE ROLE     
+            CREATE WAREHOUSE  
+            EXECUTE ALERT    
+            EXECUTE MANAGED ALERT   
+            EXECUTE MANAGED TASK      
+            EXECUTE TASK   
+            IMPORT SHARE   
+            MANAGE ACCOUNT SUPPORT CASES        
+            MANAGE USER SUPPORT CASES     
+            MANAGE WAREHOUSES  
+            MODIFY LOG LEVEL      
+            MODIFY SESSION LOG LEVEL   
+            MODIFY SESSION TRACE LEVEL      
+            MODIFY TRACE LEVEL  
+            MONITOR  
+            MONITOR EXECUTION  
+            MONITOR USAGE   
+            OVERRIDE SHARE RESTRICTIONS  
+            PURCHASE DATA EXCHANGE LISTING        
+            RESOLVE ALL   
+USAGE EXAMPLE:  CALL ADMIN_UTILITIES.LOCAL_ADMIN_UTILITES.MANAGE_GRANTS('GRANT ALL ON DATABASE DB1 TO ROLE ANALYST');
+$$;
+
+GRANT USAGE ON PROCEDURE ADMIN_UTILITIES.LOCAL_ADMIN_UTILITES.MANAGE_GRANTS(VARCHAR) TO ROLE IDENTIFIER($ROLE_NM);
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--TEST 
+USE ROLE IDENTIFIER($ROLE_NM);
+
+CALL ADMIN_UTILITIES.LOCAL_ADMIN_UTILITES.MANAGE_GRANTS('GRANT ALL ON DATABASE DB1 TO ROLE ANALYST');
+
+CALL ADMIN_UTILITIES.LOCAL_ADMIN_UTILITES.MANAGE_GRANTS('REVOKE ALL ON DATABASE DB1 FROM ROLE ANALYST');
+
+CALL ADMIN_UTILITIES.LOCAL_ADMIN_UTILITES.MANAGE_GRANTS('GRANT ROLE ACCOUNTADMIN TO ROLE ANALYST');
+
+
+
+--get list and usage information on loacl admin utility procedures
+DECLARE
+    RES RESULTSET ;
+BEGIN
+    show procedures;
+    RES := 
+        (select "catalog_name", "schema_name", "name","description" 
+        from table(result_scan(last_query_id()))
+        where "catalog_name" = 'ADMIN_UTILITIES'
+        and "schema_name" = 'LOCAL_ADMIN_UTILITES');
+    RETURN TABLE(RES);
+END;
+Databases
+Worksheets
+Data Products
+Search
+Ask Copilot
+
+Sorted by descending
