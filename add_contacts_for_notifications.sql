@@ -1,0 +1,1 @@
+--https://app.snowflake.com/sfpscogs/kim_east_azure/#/account/notification-contacts
