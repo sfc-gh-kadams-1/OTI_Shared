@@ -158,3 +158,18 @@ USAGE EXAMPLE:  CALL ADMIN_UTILITIES.LOCAL_ADMIN_UTILITES.MANAGE_GRANTS('GRANT A
 $$;
 
 GRANT USAGE ON PROCEDURE ADMIN_UTILITIES.LOCAL_ADMIN_UTILITES.MANAGE_GRANTS(VARCHAR) TO ROLE IDENTIFIER($ROLE_NM);
+
+
+
+-----get list of local admin utilites and usage 
+DECLARE
+RES RESULTSET ;
+BEGIN
+    show procedures;
+    RES :=
+        (select "catalog_name", "schema_name", "name","description"
+        from table(result_scan(last_query_id()))
+        where "catalog_name" = 'ADMIN_UTILITIES'
+        and "schema_name" = 'LOCAL_ADMIN_UTILITES');
+    RETURN TABLE(RES);
+END;
