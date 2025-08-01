@@ -25,3 +25,34 @@ QDA	 - 	QW85485.us-gov-virginia.azure.snowflakecomputing.com
 QDA_NONPRD	 - 	KA07005.us-gov-virginia.azure.snowflakecomputing.com
 YR44338	 - 	YR44338.us-gov-virginia.azure.snowflakecomputing.com
 */
+
+
+
+/* IP List - DOT
+
+55W 7th EAST & WEST Subnet:
+10.243.116.0/23
+10.243.106.0/23
+
+55W 9th EAST & WEST Subnet:
+10.243.119.0/24
+10.243.109.0/24
+
+2811 Subnet:
+10.128.161.51/25
+
+3402 Subnet Parking & Traffic:
+10.128.154.106/23
+10.128.152.101/23
+10.128.160.0/24
+ 
+
+DOITT DMZ
+167.153.193.0/24
+167.153.196.0/24
+20.10.218.168/29
+20.12.106.248/29
+161.185.0.0/16
+167.153.198.0/24
+
+*/
